@@ -1,4 +1,4 @@
-//*
+//* 2048 Game!
 
 //* DOM Elements
 
@@ -37,6 +37,7 @@ for (let i = 0; i < width ** 2; i++) {
 //* Start the game
 
 function startGame() {
+  addActiveTile()
   addActiveTile()
 }
 startGame()
@@ -122,68 +123,265 @@ function shift(direction) {
       activeTileIndex.push(i)
     }
   })
+  shiftLoopDirection(direction, activeTileIndex)
+}
+
+function shiftLoopDirection(direction, activeTileIndex) {
   switch (direction) {
-    case 'up': moveUp(activeTileIndex); break
-    case 'left': moveLeft(activeTileIndex); break
-    case 'down': moveDown(activeTileIndex); break
-    case 'right': moveRight(activeTileIndex); break
+    case 'up':
+      activeTileIndex.forEach((tileIndex, i) => {
+        // console.log(`current tile is ${tileIndex}`)
+        if (tileIndex - width >= 0) {
+          move(tileIndex - width, tileIndex, activeTileIndex, direction, i)
+        }
+        // moveUp(activeTileIndex)
+      })
+      break
+
+    case 'left':
+      activeTileIndex.forEach((tileIndex, i) => {
+        // console.log(`current tile is ${tileIndex}`)
+        if (!(tileIndex % width === 0)) {
+          move(tileIndex - 1, tileIndex, activeTileIndex, direction, i)
+        }
+        // moveUp(activeTileIndex)
+      })
+      // moveLeft(activeTileIndex)
+      break
+
+    case 'down':
+      activeTileIndex.reverse()
+      activeTileIndex.forEach((tileIndex, i) => {
+        // console.log(`current tile is ${tileIndex}`)
+        if (tileIndex + width < width ** 2) {
+          move(tileIndex + width, tileIndex, activeTileIndex, direction, i)
+        }
+        // moveUp(activeTileIndex)
+      })
+      // moveDown(activeTileIndex)
+      break
+
+    case 'right':
+      activeTileIndex.reverse()
+      activeTileIndex.forEach((tileIndex, i) => {
+        // console.log(`current tile is ${tileIndex}`)
+        if (!(tileIndex % width === 3)) {
+          move(tileIndex + 1, tileIndex, activeTileIndex, direction, i)
+        }
+        // moveUp(activeTileIndex)
+      })
+      // moveRight(activeTileIndex)
+      break
+
     default: console.error('Unexpected direction passed to func shift(direction)')
   }
 }
 
-//! moveLeft, moveDown, and moveRight will all be very similar to this
-function moveUp(activeTileIndex) {
-  //? up logic
-  activeTileIndex.forEach((tileIndex, i) => {
-    console.log(`current tile is ${tileIndex}`)
+function move(directionValue, tileIndex, activeTileIndex, direction, i) {
+  if (tileArray[directionValue].classList.contains('active')) { // is it trying to move into active tile?
+    // console.log(`${tileIndex} found active tile ${directionValue}`)
 
-    if (tileIndex - width >= 0) { // is it trying to move into a valid tile?
-      console.log(`${tileIndex} found a valid tile at ${tileIndex - width}`)
-
-      if (tileArray[tileIndex - width].classList.contains('active')) { // is it trying to move into active tile?
-        // console.log(`${tileIndex} found active tile ${tileIndex - width}`)
-
-        if (tileArray[tileIndex - width].innerHTML === tileArray[tileIndex]) { // are they the same number?
-          // console.log(`${tileIndex} is merging into ${tileIndex - width}`)
-          tileArray[tileIndex].classList.remove('active')
-          tileArray[tileIndex].innerHTML = ''
-          tileArray[tileIndex - width].innerHTML = Number(tileArray[tileIndex - width].innerHTML) * 2
-          //? merge them, update score and highest value thingy
-          //! splice activeTileIndex at i to remove the active tile so we dont merge twice
-          activeTileIndex.splice(i, 1)
-        } else { 
-          // they are not the same number
-          // console.log(`${tileIndex} isnt the same as ${tileIndex - width} and isnt trying to merge`)
-        }
-      } else { 
-        //its trying to move into empty tile
-        console.log(`${tileIndex} is moving into empty tile ${tileIndex - width}`)
-        tileArray[tileIndex - width].classList.add('active')
-        console.log(`tile at ${tileIndex - width} is active? ${tileArray[tileIndex - width].classList.contains('active')}`)
-        tileArray[tileIndex - width].innerHTML = tileArray[tileIndex].innerHTML
-        tileArray[tileIndex].classList.remove('active')
-        tileArray[tileIndex].innerHTML = ''
-        activeTileIndex.splice(i, 1, tileIndex - width)
-        //? run moveUp(activeTileIndex) again
-        moveUp(activeTileIndex)
-      }
+    if (tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
+      // console.log(`${tileIndex} is merging into ${directionValue}`)
+      tileArray[tileIndex].classList.remove('active')
+      tileArray[tileIndex].innerHTML = ''
+      tileArray[directionValue].innerHTML = (Number(tileArray[directionValue].innerHTML) * 2)
+      //? merge them, update score and highest value thingy
+      //! splice activeTileIndex at i to remove the active tile so we dont merge twice
+      activeTileIndex.splice(i, 1)
     } else {
-      console.log(`${tileIndex} is trying to move into an invalid tile, splicing`)
-      // activeTileIndex.splice(i, 1)
-      // do nothing
+      // they are not the same number
+      // console.log(`${tileIndex} isnt the same as ${directionValue} and isnt trying to merge`)
     }
-  })
+  } else {
+    //its trying to move into empty tile
+    // console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
+    tileArray[directionValue].classList.add('active')
+    // console.log(`tile at ${directionValue} is active? ${tileArray[directionValue].classList.contains('active')}`)
+    tileArray[directionValue].innerHTML = tileArray[tileIndex].innerHTML
+    tileArray[tileIndex].classList.remove('active')
+    tileArray[tileIndex].innerHTML = ''
+    activeTileIndex.splice(i, 1, directionValue)
+    //? run moveUp(activeTileIndex) again
+    shiftLoopDirection(direction, activeTileIndex)
+  }
 }
 
-function moveLeft(activeTileIndex) {
-  //! left and right use +1 or -1 and checks are with %
-}
-function moveDown(activeTileIndex) {
-  //! remember to reverse the activeTileIndex so the tiles sort in the right order
-}
-function moveRight(activeTileIndex) {
-  //! remember to reverse the activeTileIndex so the tiles sort in the right order
-}
+
+//! moveLeft, moveDown, and moveRight will all be very similar to this
+// function moveUp(activeTileIndex) {
+//   //? Up logic
+//   activeTileIndex.forEach((tileIndex, i) => {
+//     // console.log(`current tile is ${tileIndex}`)
+
+//     if (tileIndex - width >= 0) { // is it trying to move into a valid tile?
+//       // console.log(`${tileIndex} found a valid tile at ${tileIndex - width}`)
+
+//       if (tileArray[tileIndex - width].classList.contains('active')) { // is it trying to move into active tile?
+//         // console.log(`${tileIndex} found active tile ${tileIndex - width}`)
+
+//         if (tileArray[tileIndex - width].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
+//           // console.log(`${tileIndex} is merging into ${tileIndex - width}`)
+//           tileArray[tileIndex].classList.remove('active')
+//           tileArray[tileIndex].innerHTML = ''
+//           tileArray[tileIndex - width].innerHTML = (Number(tileArray[tileIndex - width].innerHTML) * 2)
+//           //? merge them, update score and highest value thingy
+//           //! splice activeTileIndex at i to remove the active tile so we dont merge twice
+//           activeTileIndex.splice(i, 1)
+//         } else {
+//           // they are not the same number
+//           // console.log(`${tileIndex} isnt the same as ${tileIndex - width} and isnt trying to merge`)
+//         }
+//       } else {
+//         //its trying to move into empty tile
+//         // console.log(`${tileIndex} is moving into empty tile ${tileIndex - width}`)
+//         tileArray[tileIndex - width].classList.add('active')
+//         // console.log(`tile at ${tileIndex - width} is active? ${tileArray[tileIndex - width].classList.contains('active')}`)
+//         tileArray[tileIndex - width].innerHTML = tileArray[tileIndex].innerHTML
+//         tileArray[tileIndex].classList.remove('active')
+//         tileArray[tileIndex].innerHTML = ''
+//         activeTileIndex.splice(i, 1, tileIndex - width)
+//         //? run moveUp(activeTileIndex) again
+//         moveUp(activeTileIndex)
+//       }
+//     } else {
+//       // console.log(`${tileIndex} is trying to move into an invalid tile, splicing`)
+//       // activeTileIndex.splice(i, 1)
+//       // do nothing
+//     }
+//   })
+// }
+
+// function moveLeft(activeTileIndex) {
+//   //? Left logic
+//   activeTileIndex.forEach((tileIndex, i) => {
+//     // console.log(`current tile is ${tileIndex}`)
+
+//     if (!(tileIndex % width === 0)) { // is it trying to move into a valid tile?
+//       // console.log(`${tileIndex} found a valid tile at ${tileIndex - 1}`)
+
+//       if (tileArray[tileIndex - 1].classList.contains('active')) { // is it trying to move into active tile?
+//         // console.log(`${tileIndex} found active tile ${tileIndex - 1}`)
+
+//         if (tileArray[tileIndex - 1].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
+//           // console.log(`${tileIndex} is merging into ${tileIndex - 1}`)
+//           tileArray[tileIndex].classList.remove('active')
+//           tileArray[tileIndex].innerHTML = ''
+//           tileArray[tileIndex - 1].innerHTML = (Number(tileArray[tileIndex - 1].innerHTML) * 2)
+//           //? merge them, update score and highest value thingy
+//           //! splice activeTileIndex at i to remove the active tile so we dont merge twice
+//           activeTileIndex.splice(i, 1)
+//         } else {
+//           // they are not the same number
+//           // console.log(`${tileIndex} isnt the same as ${tileIndex - 1} and isnt trying to merge`)
+//         }
+//       } else {
+//         //its trying to move into empty tile
+//         // console.log(`${tileIndex} is moving into empty tile ${tileIndex - 1}`)
+//         tileArray[tileIndex - 1].classList.add('active')
+//         // console.log(`tile at ${tileIndex - 1} is active? ${tileArray[tileIndex - 1].classList.contains('active')}`)
+//         tileArray[tileIndex - 1].innerHTML = tileArray[tileIndex].innerHTML
+//         tileArray[tileIndex].classList.remove('active')
+//         tileArray[tileIndex].innerHTML = ''
+//         activeTileIndex.splice(i, 1, tileIndex - 1)
+//         //? run moveUp(activeTileIndex) again
+//         moveLeft(activeTileIndex)
+//       }
+//     } else {
+//       // console.log(`${tileIndex} is trying to move into an invalid tile, splicing`)
+//       // activeTileIndex.splice(i, 1)
+//       // do nothing
+//     }
+//   })
+//   //! left and right use +1 or -1 and checks are with %
+// }
+// function moveDown(activeTileIndex) {
+//   //? Down logic
+//   activeTileIndex.reverse()
+//   activeTileIndex.forEach((tileIndex, i) => {
+//     // console.log(`current tile is ${tileIndex}`)
+
+//     if (tileIndex + width < width ** 2) { // is it trying to move into a valid tile?
+//       // console.log(`${tileIndex} found a valid tile at ${tileIndex - width}`)
+
+//       if (tileArray[tileIndex + width].classList.contains('active')) { // is it trying to move into active tile?
+//         // console.log(`${tileIndex} found active tile ${tileIndex - width}`)
+
+//         if (tileArray[tileIndex + width].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
+//           // console.log(`${tileIndex} is merging into ${tileIndex - width}`)
+//           tileArray[tileIndex].classList.remove('active')
+//           tileArray[tileIndex].innerHTML = ''
+//           tileArray[tileIndex + width].innerHTML = (Number(tileArray[tileIndex + width].innerHTML) * 2)
+//           //? merge them, update score and highest value thingy
+//           //! splice activeTileIndex at i to remove the active tile so we dont merge twice
+//           activeTileIndex.splice(i, 1)
+//         } else {
+//           // they are not the same number
+//           // console.log(`${tileIndex} isnt the same as ${tileIndex - width} and isnt trying to merge`)
+//         }
+//       } else {
+//         //its trying to move into empty tile
+//         // console.log(`${tileIndex} is moving into empty tile ${tileIndex - width}`)
+//         tileArray[tileIndex + width].classList.add('active')
+//         // console.log(`tile at ${tileIndex - width} is active? ${tileArray[tileIndex - width].classList.contains('active')}`)
+//         tileArray[tileIndex + width].innerHTML = tileArray[tileIndex].innerHTML
+//         tileArray[tileIndex].classList.remove('active')
+//         tileArray[tileIndex].innerHTML = ''
+//         activeTileIndex.splice(i, 1, tileIndex + width)
+//         //? run moveUp(activeTileIndex) again
+//         moveDown(activeTileIndex)
+//       }
+//     } else {
+//       // console.log(`${tileIndex} is trying to move into an invalid tile, splicing`)
+//       // activeTileIndex.splice(i, 1)
+//       // do nothing
+//     }
+//   })
+//   //! remember to reverse the activeTileIndex so the tiles sort in the right order
+// }
+// function moveRight(activeTileIndex) {
+//   //? Left logic
+//   activeTileIndex.forEach((tileIndex, i) => {
+//     // console.log(`current tile is ${tileIndex}`)
+
+//     if (!(tileIndex % width === 3)) { // is it trying to move into a valid tile?
+//       // console.log(`${tileIndex} found a valid tile at ${tileIndex - 1}`)
+
+//       if (tileArray[tileIndex + 1].classList.contains('active')) { // is it trying to move into active tile?
+//         // console.log(`${tileIndex} found active tile ${tileIndex - 1}`)
+
+//         if (tileArray[tileIndex + 1].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
+//           // console.log(`${tileIndex} is merging into ${tileIndex - 1}`)
+//           tileArray[tileIndex].classList.remove('active')
+//           tileArray[tileIndex].innerHTML = ''
+//           tileArray[tileIndex + 1].innerHTML = (Number(tileArray[tileIndex + 1].innerHTML) * 2)
+//           //? merge them, update score and highest value thingy
+//           //! splice activeTileIndex at i to remove the active tile so we dont merge twice
+//           activeTileIndex.splice(i, 1)
+//         } else {
+//           // they are not the same number
+//           // console.log(`${tileIndex} isnt the same as ${tileIndex - 1} and isnt trying to merge`)
+//         }
+//       } else {
+//         //its trying to move into empty tile
+//         // console.log(`${tileIndex} is moving into empty tile ${tileIndex - 1}`)
+//         tileArray[tileIndex + 1].classList.add('active')
+//         // console.log(`tile at ${tileIndex - 1} is active? ${tileArray[tileIndex - 1].classList.contains('active')}`)
+//         tileArray[tileIndex + 1].innerHTML = tileArray[tileIndex].innerHTML
+//         tileArray[tileIndex].classList.remove('active')
+//         tileArray[tileIndex].innerHTML = ''
+//         activeTileIndex.splice(i, 1, tileIndex + 1)
+//         //? run moveUp(activeTileIndex) again
+//         moveRight(activeTileIndex)
+//       }
+//     } else {
+//       // console.log(`${tileIndex} is trying to move into an invalid tile, splicing`)
+//       // activeTileIndex.splice(i, 1)
+//       // do nothing
+//     }
+//   })
+//   //! remember to reverse the activeTileIndex so the tiles sort in the right order
+// }
 
 //* Additional stuffs to do:
 
