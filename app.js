@@ -14,6 +14,8 @@ const elements = {
 
 const width = 4
 const tileArray = []
+let addtile = false
+
 
 //* SETUP GRID (Working I think?)
 
@@ -37,7 +39,9 @@ for (let i = 0; i < width ** 2; i++) {
 //* Start the game
 
 function startGame() {
+  addtile = true
   addActiveTile()
+  addtile = true
   addActiveTile()
 }
 startGame()
@@ -51,42 +55,15 @@ document.addEventListener('keydown', (event) => {
 
   //? Check which input was pressed (takes arrow or common letter)
   switch (true) {
-    case key === 'w' || key === 'ArrowUp': upPressed(); break
-    case key === 'a' || key === 'ArrowLeft': leftPressed(); break
-    case key === 's' || key === 'ArrowDown': downPressed(); break
-    case key === 'd' || key === 'ArrowRight': rightPressed()
+    case key === 'w' || key === 'ArrowUp': shift('up'); break
+    case key === 'a' || key === 'ArrowLeft': shift('left'); break
+    case key === 's' || key === 'ArrowDown': shift('down'); break
+    case key === 'd' || key === 'ArrowRight': shift('right'); break
+    default: console.log('Invalid KeyStoke')
   }
+  addActiveTile()
+  console.log('---------Console Break--------')
 })
-
-//* Input Functions (Working I think?)
-
-function upPressed() {
-  console.log('up')
-  shift('up')
-  addActiveTile()
-  console.log('---------Console Break--------')
-}
-
-function leftPressed() {
-  console.log('left')
-  shift('left')
-  addActiveTile()
-  console.log('---------Console Break--------')
-}
-
-function downPressed() {
-  console.log('down')
-  shift('down')
-  addActiveTile()
-  console.log('---------Console Break--------')
-}
-
-function rightPressed() {
-  console.log('right')
-  shift('right')
-  addActiveTile()
-  console.log('---------Console Break--------')
-}
 
 //* Gameplay Loop Functions 
 
@@ -101,15 +78,54 @@ function addActiveTile() {
     }
   })
   console.log(inactiveTileIndex)
-  if (inactiveTileIndex.length > 0) { //! This is causing new tiles to be added to old bc it doesnt actually get a random tile of the inactive tiles
+  if (inactiveTileIndex.length > 0 && addtile) {
     const randTileIndex = Math.floor(Math.random() * inactiveTileIndex.length) // get random inactive tile index
     inactiveTiles[randTileIndex].classList.add('active') // set tile to active
     inactiveTiles[randTileIndex].innerHTML = 2 // give tile an innerhtml of 2
     console.log(`Adding an active tile at ${randTileIndex}`)
-  } else {
-    //? check if something can merge, if it cant then end the game
-    console.error('If you got it working this far well done, but its still broken lmao. Check func addActiveTile for the end game check')
+  } else if (inactiveTileIndex.length <= 0) {
+    console.log('inactiveTiles == 0')
+    endGameCheck()
   }
+  addtile = false
+}
+
+//* End Game Check
+
+function endGameCheck() {
+  let endGame = true
+  const activeTileIndex = []
+  tileArray.forEach((tile, i) => {
+    if (tile.classList.contains('active')) {
+      activeTileIndex.push(i)
+    }
+  })
+  console.log(activeTileIndex)
+  activeTileIndex.forEach((tileIndex) => {
+    if (endGame) {
+      console.log(`${tileIndex} is checking for moves`)
+      if (tileArray[tileIndex - width] != null && tileArray[tileIndex - width].innerHTML === tileArray[tileIndex].innerHTML) {
+        endGame = false
+        console.log(`${tileIndex} stopped the game ending from up`)
+      } else if (tileIndex % width != 0 && tileArray[tileIndex - 1].innerHTML === tileArray[tileIndex].innerHTML) {
+        endGame = false
+        console.log(`${tileIndex} stopped the game ending from left`)
+      } else if (tileArray[tileIndex + width] != null && tileArray[tileIndex + width].innerHTML === tileArray[tileIndex].innerHTML) {
+        endGame = false
+        console.log(`${tileIndex} stopped the game ending from down`)
+      } else if (tileIndex % width != width - 1 && tileArray[tileIndex + 1].innerHTML === tileArray[tileIndex].innerHTML) {
+        endGame = false
+        console.log(`${tileIndex} stopped the game ending from right`)
+      } else {
+        if (endGame != false) {
+          endGame = true
+        }
+
+        console.log(`${tileIndex} can't make any moves`)
+      }
+    }
+  })
+  console.log(`The game has ended: ${endGame}`)
 }
 
 
@@ -165,7 +181,7 @@ function shiftLoopDirection(direction, activeTileIndex) {
       activeTileIndex.reverse()
       activeTileIndex.forEach((tileIndex, i) => {
         // console.log(`current tile is ${tileIndex}`)
-        if (!(tileIndex % width === 3)) {
+        if (!(tileIndex % width === width - 1)) {
           move(tileIndex + 1, tileIndex, activeTileIndex, direction, i)
         }
         // moveUp(activeTileIndex)
@@ -189,6 +205,7 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
       //? merge them, update score and highest value thingy
       //! splice activeTileIndex at i to remove the active tile so we dont merge twice
       activeTileIndex.splice(i, 1)
+      addtile = true
     } else {
       // they are not the same number
       // console.log(`${tileIndex} isnt the same as ${directionValue} and isnt trying to merge`)
@@ -204,11 +221,12 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
     activeTileIndex.splice(i, 1, directionValue)
     //? run moveUp(activeTileIndex) again
     shiftLoopDirection(direction, activeTileIndex)
+    addtile = true
   }
 }
 
 
-//! moveLeft, moveDown, and moveRight will all be very similar to this
+//! THIS CODE GOT REPLACED BY SHIFTLOOPDIRECTION() AND MOVE()
 // function moveUp(activeTileIndex) {
 //   //? Up logic
 //   activeTileIndex.forEach((tileIndex, i) => {
