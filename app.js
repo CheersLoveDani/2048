@@ -8,6 +8,11 @@ const elements = {
   highestValue: document.querySelector('#highest-value'),
   score: document.querySelector('#current-score'),
   highScore: document.querySelector('#high-score'),
+  endScreen: document.querySelector('#end-screen'),
+  endGameHV: document.querySelector('#end-game-HV'),
+  endGameFS: document.querySelector('#end-game-FS'),
+  endGameHS: document.querySelector('#end-game-HS'),
+  playAgainButton: document.querySelector('#end-screen button'),
 }
 
 //* Variables
@@ -83,7 +88,7 @@ function addActiveTile() {
       inactiveTiles.push(tile)
     }
   })
-  
+
   // console.log(`inactive tiles: ${inactiveTileIndex}`)
   if (inactiveTileIndex.length > 0 && addtile) {
     const randTileIndex = Math.floor(Math.random() * inactiveTileIndex.length) // get random inactive tile index
@@ -100,7 +105,7 @@ function addActiveTile() {
 //* End Game Check
 
 function endGameCheck() {
-  let endGame = true
+  let endGameBool = true
   const activeTileIndex = []
   tileArray.forEach((tile, i) => {
     if (tile.classList.contains('active')) {
@@ -109,23 +114,24 @@ function endGameCheck() {
   })
   // console.log('Beginning end of game check')
   activeTileIndex.forEach((tileIndex) => {
-    if (endGame) {
+    if (endGameBool) {
       // console.log(`${tileIndex} is checking for moves`)
       if (tileArray[tileIndex - width] != null && tileArray[tileIndex - width].innerHTML === tileArray[tileIndex].innerHTML) {
-        endGame = false
+        endGameBool = false
         // console.log(`${tileIndex} stopped the game ending from up`)
       } else if (tileIndex % width != 0 && tileArray[tileIndex - 1].innerHTML === tileArray[tileIndex].innerHTML) {
-        endGame = false
+        endGameBool = false
         // console.log(`${tileIndex} stopped the game ending from left`)
       } else if (tileArray[tileIndex + width] != null && tileArray[tileIndex + width].innerHTML === tileArray[tileIndex].innerHTML) {
-        endGame = false
+        endGameBool = false
         // console.log(`${tileIndex} stopped the game ending from down`)
       } else if (tileIndex % width != width - 1 && tileArray[tileIndex + 1].innerHTML === tileArray[tileIndex].innerHTML) {
-        endGame = false
+        endGameBool = false
         // console.log(`${tileIndex} stopped the game ending from right`)
       } else {
-        if (endGame != false) {
-          endGame = true
+        if (endGameBool != false) {
+          endGameBool = true
+          endGame()
         }
 
         // console.log(`${tileIndex} can't make any moves`)
@@ -133,6 +139,24 @@ function endGameCheck() {
     }
   })
   // console.log(`The game has ended: ${endGame}`)
+}
+
+//* End the Game
+
+function endGame() {
+  elements.endScreen.style.display = 'block'
+  elements.endGameHV.innerHTML = highestValue
+  elements.endGameFS.innerHTML = score
+  elements.endGameHS.innerHTML = highScore //!Replace this when we learn about saving data
+}
+
+elements.playAgainButton.addEventListener('click', () => {
+  
+})
+
+function setHighScore() {
+  //? set the high score after game ends
+  //? display a new high score message on a high score (stretch)
 }
 
 
@@ -206,18 +230,18 @@ function shiftLoopDirection(direction, activeTileIndex) {
 function move(directionValue, tileIndex, activeTileIndex, direction, i) {
   if (tileArray[directionValue].classList.contains('active')) { // is it trying to move into active tile?
     // console.log(`${tileIndex} found active tile ${directionValue}`)
-    
+
     if (tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML && tileArray[tileIndex].classList.contains('mergeable') && tileArray[directionValue].classList.contains('mergeable')) { // are they the same number?
-      
+
       // console.log(`${tileIndex} is merging into ${directionValue}`)
-      
+
       tileArray[tileIndex].classList.remove('active')
       tileArray[tileIndex].innerHTML = ''
       tileArray[directionValue].innerHTML = (Number(tileArray[directionValue].innerHTML) * 2)
       tileArray[directionValue].classList.add('active')
-      
+
       updateScores((Number(tileArray[directionValue].innerHTML)))
-      
+
       //? merge them, update score and highest value thingy
       //! splice activeTileIndex at i to remove the active tile so we dont merge twice
       activeTileIndex.splice(i, 1)
@@ -229,10 +253,10 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
       // console.log(`${tileIndex} is same as ${directionValue}? ${tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML}, is mergeable? ${tileArray[tileIndex].classList.contains('mergeable')}<`)
     }
   } else {
-    
+
     //its trying to move into empty tile
     // console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
-    
+
     if (tileArray[tileIndex].classList.contains('mergeable')) {
       tileArray[tileIndex].classList.remove('mergeable')
       tileArray[directionValue].classList.add('mergeable')
@@ -240,7 +264,7 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
 
     tileArray[directionValue].classList.add('active')
     // console.log(`tile ${directionValue} is becoming active ${tileArray[directionValue].classList.contains('active')}`)
-    
+
     tileArray[directionValue].innerHTML = tileArray[tileIndex].innerHTML
     tileArray[tileIndex].classList.remove('active')
     // console.log(`removed active from ${tileIndex}<`)
@@ -269,10 +293,7 @@ function updateScores(value) {
   }
 }
 
-function setHighScore() {
-  //? set the high score after game ends
-  //? display a new high score message on a high score (stretch)
-}
+
 
 
 //* Styling and Anims

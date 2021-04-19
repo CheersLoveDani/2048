@@ -18,8 +18,8 @@ body {
   display: flex;
   flex-direction: row;
   border: 4px solid rgb(180, 180, 180);
-  width: 40vw;
-  height: 40vw;
+  width: 80vh;
+  height: 80vh;
   flex-wrap: wrap;
 }
 
@@ -34,7 +34,7 @@ body {
 
 header {
   display: flex;
-  width: 40vw;
+  width: 80vh;
   border: 8px solid rgb(180, 180, 180);
   border-bottom: 4px;
   padding: 2vw;
@@ -46,17 +46,38 @@ header {
   font-size: 1.3vw;
 }
 
-@media (max-width: 1000px){
+#end-screen {
+  display: none;
+  flex: none;
+  position: absolute;
+  text-align: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.719);
+  width: 100vw;
+  height: 100vw;
+  padding-top: 25%;
+  font-size: 3vw;
+}
+
+#end-screen button {
+  width: 20vw;
+  font-size: 2vw;
+}
+
+
+@media (max-width: 760px){
   #grid{
-    width: 60vw;
-    height: 60vw;
+    width: 80vw;
+    height: 80vw;
   }
   header{
-    width: 60vw;
+    width: 80vw;
   }
   #grid div {
     font-size: 6vw;
   }
-
+  #end-screen {
+  font-size: 3vw;
+  }
 }
 
