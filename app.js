@@ -7,7 +7,7 @@ const elements = {
   grid: document.querySelector('#grid'),
   highestValue: document.querySelector('#highest-value'),
   score: document.querySelector('#current-score'),
-  highScorce: document.querySelector('#high-score'),
+  highScore: document.querySelector('#high-score'),
 }
 
 //* Variables
@@ -15,6 +15,9 @@ const elements = {
 const width = 4
 const tileArray = []
 let addtile = false
+let highestValue = 0
+let score = 0
+let highScore = 0
 
 
 //* SETUP GRID (Working I think?)
@@ -31,7 +34,7 @@ for (let i = 0; i < width ** 2; i++) {
   //? add div to div array
   tileArray.push(tile)
 
-  //? Style the Div
+  //? Make the tiles fit nicely no matter the width
   tile.style.width = `${100 / width}%`
   tile.style.height = `${100 / width}%`
 }
@@ -44,12 +47,13 @@ function startGame() {
   addtile = true
   addActiveTile()
   updateColors()
+  updateScores(2)
 }
 startGame()
 
 //* Check input (Working I think?)
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener('keyup', (event) => {
 
   //? make the const key = the key they was pressed
   const key = event.key
@@ -148,47 +152,40 @@ function shiftLoopDirection(direction, activeTileIndex) {
   switch (direction) {
     case 'up':
       activeTileIndex.forEach((tileIndex, i) => {
-        // console.log(`current tile is ${tileIndex}`)
+        console.log(`current tile is ${tileIndex}`)
         if (tileIndex - width >= 0) {
           move(tileIndex - width, tileIndex, activeTileIndex, direction, i)
         }
-        // moveUp(activeTileIndex)
       })
       break
 
     case 'left':
       activeTileIndex.forEach((tileIndex, i) => {
-        // console.log(`current tile is ${tileIndex}`)
+        console.log(`current tile is ${tileIndex}`)
         if (!(tileIndex % width === 0)) {
           move(tileIndex - 1, tileIndex, activeTileIndex, direction, i)
         }
-        // moveUp(activeTileIndex)
       })
-      // moveLeft(activeTileIndex)
       break
 
     case 'down':
       activeTileIndex.reverse()
       activeTileIndex.forEach((tileIndex, i) => {
-        // console.log(`current tile is ${tileIndex}`)
+        console.log(`current tile is ${tileIndex}`)
         if (tileIndex + width < width ** 2) {
           move(tileIndex + width, tileIndex, activeTileIndex, direction, i)
         }
-        // moveUp(activeTileIndex)
       })
-      // moveDown(activeTileIndex)
       break
 
     case 'right':
       activeTileIndex.reverse()
       activeTileIndex.forEach((tileIndex, i) => {
-        // console.log(`current tile is ${tileIndex}`)
+        console.log(`current tile is ${tileIndex}`)
         if (!(tileIndex % width === width - 1)) {
           move(tileIndex + 1, tileIndex, activeTileIndex, direction, i)
         }
-        // moveUp(activeTileIndex)
       })
-      // moveRight(activeTileIndex)
       break
 
     default: console.error('Unexpected direction passed to func shift(direction)')
@@ -197,25 +194,26 @@ function shiftLoopDirection(direction, activeTileIndex) {
 
 function move(directionValue, tileIndex, activeTileIndex, direction, i) {
   if (tileArray[directionValue].classList.contains('active')) { // is it trying to move into active tile?
-    // console.log(`${tileIndex} found active tile ${directionValue}`)
+    console.log(`${tileIndex} found active tile ${directionValue}`)
     if (tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
-      // console.log(`${tileIndex} is merging into ${directionValue}`)
+      console.log(`${tileIndex} is merging into ${directionValue}`)
       tileArray[tileIndex].classList.remove('active')
       tileArray[tileIndex].innerHTML = ''
       tileArray[directionValue].innerHTML = (Number(tileArray[directionValue].innerHTML) * 2)
+      updateScores((Number(tileArray[directionValue].innerHTML)))
       //? merge them, update score and highest value thingy
       //! splice activeTileIndex at i to remove the active tile so we dont merge twice
       activeTileIndex.splice(i, 1)
       addtile = true
     } else {
       // they are not the same number
-      // console.log(`${tileIndex} isnt the same as ${directionValue} and isnt trying to merge`)
+      console.log(`${tileIndex} isnt the same as ${directionValue} and isnt trying to merge`)
     }
   } else {
     //its trying to move into empty tile
-    // console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
+    console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
     tileArray[directionValue].classList.add('active')
-    // console.log(`tile at ${directionValue} is active? ${tileArray[directionValue].classList.contains('active')}`)
+    console.log(`tile at ${directionValue} is active? ${tileArray[directionValue].classList.contains('active')}`)
     tileArray[directionValue].innerHTML = tileArray[tileIndex].innerHTML
     tileArray[tileIndex].classList.remove('active')
     tileArray[tileIndex].innerHTML = ''
@@ -225,6 +223,29 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
     addtile = true
   }
 }
+
+//* Scoring
+
+function updateScores(value) {
+  score += value
+  elements.score.innerHTML = score
+  if (highestValue < value) {
+    highestValue = value
+    elements.highestValue.innerHTML = highestValue
+  }
+  if (highScore < score) {
+    highScore = score
+    elements.highScore.innerHTML = highScore
+  }
+}
+
+function setHighScore() {
+  //? set the high score after game ends
+  //? display a new high score message on a high score (stretch)
+}
+
+
+//* Styling and Anims
 
 function updateColors() {
   tileArray.forEach((tile) => {
@@ -241,9 +262,16 @@ function updateColors() {
       case '512': tile.style.backgroundColor = '#660066'; tile.style.color = 'white'; break
       case '1024': tile.style.backgroundColor = '#006600'; tile.style.color = 'white'; break
       case '2048': tile.style.backgroundColor = '	#000000'; tile.style.color = 'white'; break
+      case '4096': tile.style.backgroundColor = '	#000000'; tile.style.color = 'white'; break
+      case '8192': tile.style.backgroundColor = '	#000000'; tile.style.color = 'white'; break
+      case '16384': tile.style.backgroundColor = '	#000000'; tile.style.color = 'white'; break
+      case '32768': tile.style.backgroundColor = '	#000000'; tile.style.color = 'white'; break
+      case '65536': tile.style.backgroundColor = '	#000000'; tile.style.color = 'white'; break
+      case '131072': tile.style.backgroundColor = '	#000000'; tile.style.color = 'white'; break
     }
   })
 }
+//? Pretty much anything above 4096 is very much overkill but eh, don't want it looking bad if a world record player plays.
 
 //* Additional stuffs to do:
 

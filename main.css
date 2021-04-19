@@ -15,8 +15,8 @@ body {
   display: flex;
   flex-direction: row;
   border: 4px solid rgb(180, 180, 180);
-  width: 600px;
-  height: 600px;
+  width: 40vw;
+  height: 40vw;
   flex-wrap: wrap;
 }
 
@@ -24,6 +24,32 @@ body {
   width: 20%;
   height: 20%;
   border: 4px solid rgb(180, 180, 180);
-  font-size: 50px;
+  font-size: 4vw;
   text-align: center;
+}
+
+header {
+  display: flex;
+  width: 40vw;
+  border: 8px solid rgb(180, 180, 180);
+  border-bottom: 4px;
+}
+
+#HV, #HS, #S {
+  flex: 1;
+  padding: 2vw;
+  font-size: 1.3vw;
+}
+
+@media (max-width: 1000px){
+  #grid{
+    width: 60vw;
+    height: 60vw;
+  }
+  header{
+    width: 60vw;
+  }
+}
+#grid div {
+  font-size: 6vw;
 }
