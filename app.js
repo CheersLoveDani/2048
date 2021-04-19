@@ -64,11 +64,11 @@ document.addEventListener('keyup', (event) => {
     case key === 'a' || key === 'ArrowLeft': shift('left'); break
     case key === 's' || key === 'ArrowDown': shift('down'); break
     case key === 'd' || key === 'ArrowRight': shift('right'); break
-    default: console.log('Invalid KeyStoke')
+    // default: console.log('Invalid KeyStoke')
   }
   addActiveTile()
   updateColors()
-  console.log('---------Console Break--------')
+  // console.log('---------Console Break--------')
 })
 
 //* Gameplay Loop Functions 
@@ -83,14 +83,15 @@ function addActiveTile() {
       inactiveTiles.push(tile)
     }
   })
-  console.log(inactiveTileIndex)
+  
+  // console.log(`inactive tiles: ${inactiveTileIndex}`)
   if (inactiveTileIndex.length > 0 && addtile) {
     const randTileIndex = Math.floor(Math.random() * inactiveTileIndex.length) // get random inactive tile index
     inactiveTiles[randTileIndex].classList.add('active') // set tile to active
     inactiveTiles[randTileIndex].innerHTML = 2 // give tile an innerhtml of 2
-    console.log(`Adding an active tile at ${randTileIndex}`)
+    // console.log(`Adding an active tile at ${randTileIndex}`)
   } else if (inactiveTileIndex.length <= 0) {
-    console.log('inactiveTiles == 0')
+    // ('inactiveTiles == 0')
     endGameCheck()
   }
   addtile = false
@@ -106,32 +107,32 @@ function endGameCheck() {
       activeTileIndex.push(i)
     }
   })
-  console.log('Beginning end of game check')
+  // console.log('Beginning end of game check')
   activeTileIndex.forEach((tileIndex) => {
     if (endGame) {
       // console.log(`${tileIndex} is checking for moves`)
       if (tileArray[tileIndex - width] != null && tileArray[tileIndex - width].innerHTML === tileArray[tileIndex].innerHTML) {
         endGame = false
-        console.log(`${tileIndex} stopped the game ending from up`)
+        // console.log(`${tileIndex} stopped the game ending from up`)
       } else if (tileIndex % width != 0 && tileArray[tileIndex - 1].innerHTML === tileArray[tileIndex].innerHTML) {
         endGame = false
-        console.log(`${tileIndex} stopped the game ending from left`)
+        // console.log(`${tileIndex} stopped the game ending from left`)
       } else if (tileArray[tileIndex + width] != null && tileArray[tileIndex + width].innerHTML === tileArray[tileIndex].innerHTML) {
         endGame = false
-        console.log(`${tileIndex} stopped the game ending from down`)
+        // console.log(`${tileIndex} stopped the game ending from down`)
       } else if (tileIndex % width != width - 1 && tileArray[tileIndex + 1].innerHTML === tileArray[tileIndex].innerHTML) {
         endGame = false
-        console.log(`${tileIndex} stopped the game ending from right`)
+        // console.log(`${tileIndex} stopped the game ending from right`)
       } else {
         if (endGame != false) {
           endGame = true
         }
 
-        console.log(`${tileIndex} can't make any moves`)
+        // console.log(`${tileIndex} can't make any moves`)
       }
     }
   })
-  console.log(`The game has ended: ${endGame}`)
+  // console.log(`The game has ended: ${endGame}`)
 }
 
 
@@ -143,6 +144,8 @@ function shift(direction) {
   tileArray.forEach((tile, i) => {
     if (tile.classList.contains('active')) {
       activeTileIndex.push(i)
+      tile.classList.add('mergeable')
+      // console.log(tile.classList.value)
     }
   })
   shiftLoopDirection(direction, activeTileIndex)
@@ -152,22 +155,22 @@ function shiftLoopDirection(direction, activeTileIndex) {
   switch (direction) {
     case 'up':
       activeTileIndex.forEach((tileIndex, i) => {
-        console.log(`current tile is ${tileIndex}`)
+        // console.log(`>current tile is ${tileIndex}`)
         if (tileIndex - width >= 0) {
           move(tileIndex - width, tileIndex, activeTileIndex, direction, i)
         } else {
-          console.log(`${tileIndex} is trying to move out of grid`)
+          // console.log(`${tileIndex} is trying to move out of grid<`)
         }
       })
       break
 
     case 'left':
       activeTileIndex.forEach((tileIndex, i) => {
-        console.log(`current tile is ${tileIndex}`)
+        // console.log(`>current tile is ${tileIndex}`)
         if (!(tileIndex % width === 0)) {
           move(tileIndex - 1, tileIndex, activeTileIndex, direction, i)
         } else {
-          console.log(`${tileIndex} is trying to move out of grid`)
+          // console.log(`${tileIndex} is trying to move out of grid<`)
         }
       })
       break
@@ -175,11 +178,11 @@ function shiftLoopDirection(direction, activeTileIndex) {
     case 'down':
       activeTileIndex.reverse()
       activeTileIndex.forEach((tileIndex, i) => {
-        console.log(`current tile is ${tileIndex}`)
+        // console.log(`>current tile is ${tileIndex}`)
         if (tileIndex + width < width ** 2) {
           move(tileIndex + width, tileIndex, activeTileIndex, direction, i)
         } else {
-          console.log(`${tileIndex} is trying to move out of grid`)
+          // console.log(`${tileIndex} is trying to move out of grid<`)
         }
       })
       break
@@ -187,11 +190,11 @@ function shiftLoopDirection(direction, activeTileIndex) {
     case 'right':
       activeTileIndex.reverse()
       activeTileIndex.forEach((tileIndex, i) => {
-        console.log(`current tile is ${tileIndex}`)
+        // console.log(`>current tile is ${tileIndex}`)
         if (!(tileIndex % width === width - 1)) {
           move(tileIndex + 1, tileIndex, activeTileIndex, direction, i)
         } else {
-          console.log(`${tileIndex} is trying to move out of grid`)
+          // console.log(`${tileIndex} is trying to move out of grid<`)
         }
       })
       break
@@ -202,40 +205,51 @@ function shiftLoopDirection(direction, activeTileIndex) {
 
 function move(directionValue, tileIndex, activeTileIndex, direction, i) {
   if (tileArray[directionValue].classList.contains('active')) { // is it trying to move into active tile?
-    console.log(`${tileIndex} found active tile ${directionValue}`)
+    // console.log(`${tileIndex} found active tile ${directionValue}`)
     
-    if (tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
+    if (tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML && tileArray[tileIndex].classList.contains('mergeable') && tileArray[directionValue].classList.contains('mergeable')) { // are they the same number?
       
-      console.log(`${tileIndex} is merging into ${directionValue}`)
+      // console.log(`${tileIndex} is merging into ${directionValue}`)
       
       tileArray[tileIndex].classList.remove('active')
       tileArray[tileIndex].innerHTML = ''
       tileArray[directionValue].innerHTML = (Number(tileArray[directionValue].innerHTML) * 2)
+      tileArray[directionValue].classList.add('active')
+      
       updateScores((Number(tileArray[directionValue].innerHTML)))
       
       //? merge them, update score and highest value thingy
       //! splice activeTileIndex at i to remove the active tile so we dont merge twice
       activeTileIndex.splice(i, 1)
+      tileArray[directionValue].classList.remove('mergeable')
       addtile = true
-
+      // console.log(`removed mergeable from ${tileIndex}<`)
     } else {
-      // they are not the same number
-      console.log(`${tileIndex} isnt the same as ${directionValue} and isnt trying to merge`)
+      // they are not the same number or it isnt mergeable
+      // console.log(`${tileIndex} is same as ${directionValue}? ${tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML}, is mergeable? ${tileArray[tileIndex].classList.contains('mergeable')}<`)
     }
   } else {
     
     //its trying to move into empty tile
-    console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
+    // console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
     
+    if (tileArray[tileIndex].classList.contains('mergeable')) {
+      tileArray[tileIndex].classList.remove('mergeable')
+      tileArray[directionValue].classList.add('mergeable')
+    }
+
     tileArray[directionValue].classList.add('active')
     // console.log(`tile ${directionValue} is becoming active ${tileArray[directionValue].classList.contains('active')}`)
     
     tileArray[directionValue].innerHTML = tileArray[tileIndex].innerHTML
     tileArray[tileIndex].classList.remove('active')
+    // console.log(`removed active from ${tileIndex}<`)
+
     tileArray[tileIndex].innerHTML = ''
     activeTileIndex.splice(i, 1, directionValue)
     //? run moveUp(activeTileIndex) again
     shiftLoopDirection(direction, activeTileIndex)
+    // console.log('###looping###')
     addtile = true
   }
 }
