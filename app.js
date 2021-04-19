@@ -155,6 +155,8 @@ function shiftLoopDirection(direction, activeTileIndex) {
         console.log(`current tile is ${tileIndex}`)
         if (tileIndex - width >= 0) {
           move(tileIndex - width, tileIndex, activeTileIndex, direction, i)
+        } else {
+          console.log(`${tileIndex} is trying to move out of grid`)
         }
       })
       break
@@ -164,6 +166,8 @@ function shiftLoopDirection(direction, activeTileIndex) {
         console.log(`current tile is ${tileIndex}`)
         if (!(tileIndex % width === 0)) {
           move(tileIndex - 1, tileIndex, activeTileIndex, direction, i)
+        } else {
+          console.log(`${tileIndex} is trying to move out of grid`)
         }
       })
       break
@@ -174,6 +178,8 @@ function shiftLoopDirection(direction, activeTileIndex) {
         console.log(`current tile is ${tileIndex}`)
         if (tileIndex + width < width ** 2) {
           move(tileIndex + width, tileIndex, activeTileIndex, direction, i)
+        } else {
+          console.log(`${tileIndex} is trying to move out of grid`)
         }
       })
       break
@@ -184,6 +190,8 @@ function shiftLoopDirection(direction, activeTileIndex) {
         console.log(`current tile is ${tileIndex}`)
         if (!(tileIndex % width === width - 1)) {
           move(tileIndex + 1, tileIndex, activeTileIndex, direction, i)
+        } else {
+          console.log(`${tileIndex} is trying to move out of grid`)
         }
       })
       break
@@ -195,25 +203,33 @@ function shiftLoopDirection(direction, activeTileIndex) {
 function move(directionValue, tileIndex, activeTileIndex, direction, i) {
   if (tileArray[directionValue].classList.contains('active')) { // is it trying to move into active tile?
     console.log(`${tileIndex} found active tile ${directionValue}`)
+    
     if (tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML) { // are they the same number?
+      
       console.log(`${tileIndex} is merging into ${directionValue}`)
+      
       tileArray[tileIndex].classList.remove('active')
       tileArray[tileIndex].innerHTML = ''
       tileArray[directionValue].innerHTML = (Number(tileArray[directionValue].innerHTML) * 2)
       updateScores((Number(tileArray[directionValue].innerHTML)))
+      
       //? merge them, update score and highest value thingy
       //! splice activeTileIndex at i to remove the active tile so we dont merge twice
       activeTileIndex.splice(i, 1)
       addtile = true
+
     } else {
       // they are not the same number
       console.log(`${tileIndex} isnt the same as ${directionValue} and isnt trying to merge`)
     }
   } else {
+    
     //its trying to move into empty tile
     console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
+    
     tileArray[directionValue].classList.add('active')
-    console.log(`tile at ${directionValue} is active? ${tileArray[directionValue].classList.contains('active')}`)
+    // console.log(`tile ${directionValue} is becoming active ${tileArray[directionValue].classList.contains('active')}`)
+    
     tileArray[directionValue].innerHTML = tileArray[tileIndex].innerHTML
     tileArray[tileIndex].classList.remove('active')
     tileArray[tileIndex].innerHTML = ''
