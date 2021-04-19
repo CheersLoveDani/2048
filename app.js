@@ -27,22 +27,36 @@ let highScore = 0
 
 //* SETUP GRID (Working I think?)
 
+setup()
 //? For loop through the grid div children and add to array
-
-for (let i = 0; i < width ** 2; i++) {
-  //? Create div
-  const tile = document.createElement('div')
-  //? Add div to to grid
-  elements.grid.appendChild(tile)
-  //? add div index to grid.innerHTML for debug
-  //tile.innerHTML = i
-  //? add div to div array
-  tileArray.push(tile)
-
-  //? Make the tiles fit nicely no matter the width
-  tile.style.width = `${100 / width}%`
-  tile.style.height = `${100 / width}%`
+function setup() {
+  for (let i = 0; i < width ** 2; i++) {
+    //? Create div
+    const tile = document.createElement('div')
+    //? Add div to to grid
+    elements.grid.appendChild(tile)
+    //? add div index to grid.innerHTML for debug
+    //tile.innerHTML = i
+    //? add div to div array
+    tileArray.push(tile)
+    //? Make the tiles fit nicely no matter the width
+    tile.style.width = `${100 / width}%`
+    tile.style.height = `${100 / width}%`
+  }
+  startGame()
 }
+
+
+elements.playAgainButton.addEventListener('click', () => {
+  elements.endScreen.style.display = 'none'
+  score = 0
+  tileArray.forEach((e) => {
+    e.remove()
+  })
+  tileArray.splice(0, tileArray.length)
+  setup()
+  console.log(tileArray, addtile)
+})
 
 //* Start the game
 
@@ -54,7 +68,7 @@ function startGame() {
   updateColors()
   updateScores(2)
 }
-startGame()
+
 
 //* Check input (Working I think?)
 
@@ -131,14 +145,15 @@ function endGameCheck() {
       } else {
         if (endGameBool != false) {
           endGameBool = true
-          endGame()
         }
-
         // console.log(`${tileIndex} can't make any moves`)
       }
     }
   })
   // console.log(`The game has ended: ${endGame}`)
+  if (endGameBool) {
+    endGame()
+  }
 }
 
 //* End the Game
@@ -150,9 +165,6 @@ function endGame() {
   elements.endGameHS.innerHTML = highScore //!Replace this when we learn about saving data
 }
 
-elements.playAgainButton.addEventListener('click', () => {
-  
-})
 
 function setHighScore() {
   //? set the high score after game ends
