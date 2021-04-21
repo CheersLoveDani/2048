@@ -75,8 +75,51 @@ function startGame() {
   updateScores(2)
 }
 
+//* Mobile Inputs:
 
-//* Check input (Working I think?)
+let touchX = 0
+let touchY = 0
+let newTouchX = 0
+let newTouchY = 0
+
+document.addEventListener('touchstart', (event) => {
+  console.log('Touch started')
+  touchX = event.touches[0].pageX
+  touchY = event.touches[0].pageY
+  console.log(touchX, touchY)
+})
+
+document.addEventListener('touchmove', (event) => {
+  newTouchX = event.touches[0].pageX
+  newTouchY = event.touches[0].pageY
+})
+
+document.addEventListener('touchend', (event) => {
+  console.log('Touch end')
+  console.log(newTouchX, newTouchY)
+  console.log(Math.abs(touchY - newTouchY), Math.abs(touchX - newTouchX))
+
+  if (Math.abs(touchY - newTouchY) > Math.abs(touchX - newTouchX)) {
+    if (touchY >= newTouchY) {
+      shift('up')
+    } else {
+      shift('down')
+    }
+  } else {
+    if (touchX >= newTouchX) {
+      shift('left')
+    } else {
+      shift('right')
+    }
+  }
+
+  addActiveTile()
+  updateColors()
+})
+
+
+
+//* Deskptop Inputs:
 
 document.addEventListener('keyup', (event) => {
 
