@@ -43,6 +43,12 @@ function setup() {
     tile.style.width = `${100 / width}%`
     tile.style.height = `${100 / width}%`
   }
+  if (localStorage) {
+    highestValue = localStorage.getItem('highestValue') || 0
+    elements.highestValue.innerHTML = highestValue
+    highScore = localStorage.getItem('highScore') || 0
+    elements.highScore.innerHTML = highScore
+  }
   startGame()
 }
 
@@ -298,17 +304,24 @@ function updateScores(value) {
   if (highestValue < value) {
     highestValue = value
     elements.highestValue.innerHTML = highestValue
+    if (localStorage) {
+      localStorage.setItem('highestValue', highestValue)
+    }
   }
   if (highScore < score) {
     highScore = score
     elements.highScore.innerHTML = highScore
+    if (localStorage) {
+      localStorage.setItem('highScore', highScore)
+    }
   }
 }
 
+//* Animations
 
 
 
-//* Styling and Anims
+//* Styling
 
 function updateColors() {
   tileArray.forEach((tile) => {
