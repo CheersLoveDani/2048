@@ -25,24 +25,20 @@ let score = 0
 let highScore = 0
 
 
-//* SETUP GRID (Working I think?)
+//* Setup Game
 
 setup()
 //? For loop through the grid div children and add to array
 function setup() {
   for (let i = 0; i < width ** 2; i++) {
-    //? Create div
+    // Create tile div, add tile to page, add tile to array of tiles, make the tiles scale properly with flexbox
     const tile = document.createElement('div')
-    //? Add div to to grid
     elements.grid.appendChild(tile)
-    //? add div index to grid.innerHTML for debug
-    //tile.innerHTML = i
-    //? add div to div array
     tileArray.push(tile)
-    //? Make the tiles fit nicely no matter the width
     tile.style.width = `${100 / width}%`
     tile.style.height = `${100 / width}%`
   }
+  // Check for saves on localStorage, if there is no local storage do nothing, if there is then load the saves!
   if (localStorage) {
     highestValue = localStorage.getItem('highestValue') || 0
     elements.highestValue.innerHTML = highestValue
@@ -52,8 +48,10 @@ function setup() {
   startGame()
 }
 
+//* Play again button on end screen
 
 elements.playAgainButton.addEventListener('click', () => {
+  // Stop displaying end screen, reset score, remove all the tiles from page and array, run the setup again
   elements.endScreen.style.display = 'none'
   score = 0
   tileArray.forEach((e) => {
@@ -61,12 +59,13 @@ elements.playAgainButton.addEventListener('click', () => {
   })
   tileArray.splice(0, tileArray.length)
   setup()
-  console.log(tileArray, addtile)
+  // console.log(tileArray, addtile)
 })
 
 //* Start the game
 
 function startGame() {
+  // Add 2 starting tiles, set the colours of the starting tiles, pass in the starting score of 2
   addtile = true
   addActiveTile()
   addtile = true
@@ -77,28 +76,31 @@ function startGame() {
 
 //* Mobile Inputs:
 
+//? Variables for comparing start and end positions
+
 let touchX = 0
 let touchY = 0
 let newTouchX = 0
 let newTouchY = 0
 
 document.addEventListener('touchstart', (event) => {
-  console.log('Touch started')
+  // Save the start position of the touch
   touchX = event.touches[0].pageX
   touchY = event.touches[0].pageY
-  console.log(touchX, touchY)
+  // console.log(touchX, touchY)
 })
 
 document.addEventListener('touchmove', (event) => {
+  // Save the new position everytime its moved to get the last end pos
   newTouchX = event.touches[0].pageX
   newTouchY = event.touches[0].pageY
 })
 
-document.addEventListener('touchend', (event) => {
-  console.log('Touch end')
-  console.log(newTouchX, newTouchY)
-  console.log(Math.abs(touchY - newTouchY), Math.abs(touchX - newTouchX))
+document.addEventListener('touchend', () => {
+  // console.log(newTouchX, newTouchY)
+  // console.log(Math.abs(touchY - newTouchY), Math.abs(touchX - newTouchX))
 
+  //Find out which axis direction had the biggest change, compare direction and run a movement
   if (Math.abs(touchY - newTouchY) > Math.abs(touchX - newTouchX)) {
     if (touchY >= newTouchY) {
       shift('up')
@@ -117,16 +119,14 @@ document.addEventListener('touchend', (event) => {
   updateColors()
 })
 
-
-
 //* Deskptop Inputs:
 
 document.addEventListener('keyup', (event) => {
 
-  //? make the const key = the key they was pressed
+  // make the const key = the key they was pressed
   const key = event.key
 
-  //? Check which input was pressed (takes arrow or common letter)
+  // Check which input was pressed (takes arrow or wasd)
   switch (true) {
     case key === 'w' || key === 'ArrowUp': shift('up'); break
     case key === 'a' || key === 'ArrowLeft': shift('left'); break
@@ -142,7 +142,7 @@ document.addEventListener('keyup', (event) => {
 //* Gameplay Loop Functions 
 
 function addActiveTile() {
-  //? loop to get an array of inactive tiles
+  // loop to get an array of inactive tiles
   const inactiveTileIndex = []
   const inactiveTiles = []
   tileArray.forEach((tile, i) => {
@@ -152,6 +152,7 @@ function addActiveTile() {
     }
   })
 
+  // Check if the board is full of numbers, if it is then run the end game check, otherwise add a new active tile
   // console.log(`inactive tiles: ${inactiveTileIndex}`)
   if (inactiveTileIndex.length > 0 && addtile) {
     const randTileIndex = Math.floor(Math.random() * inactiveTileIndex.length) // get random inactive tile index
@@ -168,6 +169,7 @@ function addActiveTile() {
 //* End Game Check
 
 function endGameCheck() {
+  // Checks each tile to see if it can merge with an adjacent tile, if it can then don't end the game, if they all can't then game over.
   let endGameBool = true
   const activeTileIndex = []
   tileArray.forEach((tile, i) => {
@@ -208,23 +210,17 @@ function endGameCheck() {
 //* End the Game
 
 function endGame() {
+  // Show the end screen and display scores
   elements.endScreen.style.display = 'block'
   elements.endGameHV.innerHTML = highestValue
   elements.endGameFS.innerHTML = score
   elements.endGameHS.innerHTML = highScore //!Replace this when we learn about saving data
 }
 
-
-function setHighScore() {
-  //? set the high score after game ends
-  //? display a new high score message on a high score (stretch)
-}
-
-
-//* This should work? check it tho dumby
+//* Tile shifting initial func
 
 function shift(direction) {
-  //? loop to get an array of active tile indexs
+  // loop to get an array of active tile index's, start the shifting loop
   const activeTileIndex = []
   tileArray.forEach((tile, i) => {
     if (tile.classList.contains('active')) {
@@ -236,8 +232,12 @@ function shift(direction) {
   shiftLoopDirection(direction, activeTileIndex)
 }
 
+//* Tile shifting loop func
+
 function shiftLoopDirection(direction, activeTileIndex) {
+  // Check what direction is passed through
   switch (direction) {
+    // Check if the tiles should be added based on whether or not they are at an edge, run the movement loop
     case 'up':
       activeTileIndex.forEach((tileIndex, i) => {
         // console.log(`>current tile is ${tileIndex}`)
@@ -248,7 +248,6 @@ function shiftLoopDirection(direction, activeTileIndex) {
         }
       })
       break
-
     case 'left':
       activeTileIndex.forEach((tileIndex, i) => {
         // console.log(`>current tile is ${tileIndex}`)
@@ -259,7 +258,6 @@ function shiftLoopDirection(direction, activeTileIndex) {
         }
       })
       break
-
     case 'down':
       activeTileIndex.reverse()
       activeTileIndex.forEach((tileIndex, i) => {
@@ -269,9 +267,8 @@ function shiftLoopDirection(direction, activeTileIndex) {
         } else {
           // console.log(`${tileIndex} is trying to move out of grid<`)
         }
-      })
+      }) 
       break
-
     case 'right':
       activeTileIndex.reverse()
       activeTileIndex.forEach((tileIndex, i) => {
@@ -283,19 +280,19 @@ function shiftLoopDirection(direction, activeTileIndex) {
         }
       })
       break
-
-    default: console.error('Unexpected direction passed to func shift(direction)')
   }
 }
+
+//* The main move func
 
 function move(directionValue, tileIndex, activeTileIndex, direction, i) {
   if (tileArray[directionValue].classList.contains('active')) { // is it trying to move into active tile?
     // console.log(`${tileIndex} found active tile ${directionValue}`)
 
     if (tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML && tileArray[tileIndex].classList.contains('mergeable') && tileArray[directionValue].classList.contains('mergeable')) { // are they the same number?
-
       // console.log(`${tileIndex} is merging into ${directionValue}`)
-
+      
+      // Merge the tiles, make the new tile not mergeable again and remove the old tile from the active tile array
       tileArray[tileIndex].classList.remove('active')
       tileArray[tileIndex].innerHTML = ''
       tileArray[directionValue].innerHTML = (Number(tileArray[directionValue].innerHTML) * 2)
@@ -303,8 +300,6 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
 
       updateScores((Number(tileArray[directionValue].innerHTML)))
 
-      //? merge them, update score and highest value thingy
-      //! splice activeTileIndex at i to remove the active tile so we dont merge twice
       activeTileIndex.splice(i, 1)
       tileArray[directionValue].classList.remove('mergeable')
       addtile = true
@@ -315,7 +310,7 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
     }
   } else {
 
-    //its trying to move into empty tile
+    //Move the current tile to the empty tile its moving into, move all properties.
     // console.log(`${tileIndex} is moving into empty tile ${directionValue}`)
 
     if (tileArray[tileIndex].classList.contains('mergeable')) {
@@ -342,6 +337,7 @@ function move(directionValue, tileIndex, activeTileIndex, direction, i) {
 //* Scoring
 
 function updateScores(value) {
+  // update the scores and saves the high scores to localStorage if it finds localStorage
   score += value
   elements.score.innerHTML = score
   if (highestValue < value) {
@@ -360,13 +356,10 @@ function updateScores(value) {
   }
 }
 
-//* Animations
-
-
-
 //* Styling
 
 function updateColors() {
+  // finds the tile value each round and updates the colours of each tile accordingly
   tileArray.forEach((tile) => {
     switch (tile.innerHTML) {
       case '': tile.style.backgroundColor = 'white'; tile.style.color = 'black'; break
@@ -390,11 +383,6 @@ function updateColors() {
     }
   })
 }
-//? Pretty much anything above 4096 is very much overkill but eh, don't want it looking bad if a world record player plays.
 
-//* Additional stuffs to do:
-
-//? game initialization
-//? end game function
-//? score and highest number updates
-//? bunch-a css
+// Made by Daniel Fullerton: https://www.danielsdfullerton.co.uk
+// Original 2048 creator: Gabriele Cirulli, play the original at https://play2048.co/

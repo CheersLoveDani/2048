@@ -31,7 +31,9 @@ body {
   border: 0.5vh solid rgb(180, 180, 180);
   font-size: 6vh;
   text-align: center;
-  line-height: 200%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 header {
