@@ -28,7 +28,7 @@ let highScore = 0
 //* Setup Game
 
 setup()
-//? For loop through the grid div children and add to array
+// For loop through the grid div children and add to array
 function setup() {
   for (let i = 0; i < width ** 2; i++) {
     // Create tile div, add tile to page, add tile to array of tiles, make the tiles scale properly with flexbox
