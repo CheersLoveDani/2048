@@ -12,7 +12,7 @@ It was also important for me for the game to scale nicely all the way down to mo
 
 This project was completed in 1 week and was an individual project.
 
-[You can play it here!](https://sirdantheawesome.github.io/project-1/) or click the link at the bottom of this readme.
+[You can play it here!](https://sirdantheawesome.github.io/2048/) or click the link at the bottom of this readme.
 
 ## The Brief 
 
