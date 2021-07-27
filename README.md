@@ -1,5 +1,7 @@
-### ![GA](https://cloud.githubusercontent.com/assets/40461/8183776/469f976e-1432-11e5-8199-6ac91363302b.png) 
+### ![GA](https://cloud.githubusercontent.com/assets/40461/8183776/469f976e-1432-11e5-8199-6ac91363302b.png)
+
 # General Assembly, Software Engineering Immersive
+
 # 2048 Project
 
 ## Overview
@@ -12,9 +14,11 @@ It was also important for me for the game to scale nicely all the way down to mo
 
 This project was completed in 1 week and was an individual project.
 
+[Github](https://github.com/sirdantheawesome/2048)
+
 [You can play it here!](https://sirdantheawesome.github.io/2048/) or click the link at the bottom of this readme.
 
-## The Brief 
+## The Brief
 
 - **Render a game in the browser**
 - **Design logic for the game ending and displaying the scores**
@@ -24,8 +28,7 @@ This project was completed in 1 week and was an individual project.
 - **Deploy your game online**, where the rest of the world can access it
 - Use **semantic markup** for HTML and CSS (adhere to best practices)
 
-
-## The Technologies used 
+## The Technologies used
 
 - HTML5
 - CSS3
@@ -33,59 +36,58 @@ This project was completed in 1 week and was an individual project.
 - Git and GitHub
 - Google Fonts
 
-
 ## The Approach
 
 ### The Grid
 
 This game was made using a 4 by 4 grid as this is the best way to play 2048. The code was built to account for possible other grid sizes but I felt it was best to stick to the classic 4 by 4
 
- ```js
- const width = 4
-const tileArray = []
-let addtile = false
-let highestValue = 0
-let score = 0
-let highScore = 0
+```js
+const width = 4;
+const tileArray = [];
+let addtile = false;
+let highestValue = 0;
+let score = 0;
+let highScore = 0;
 
 //* Setup Game
 
-setup()
+setup();
 // For loop through the grid div children and add to array
 function setup() {
   for (let i = 0; i < width ** 2; i++) {
     // Create tile div, add tile to page, add tile to array of tiles, make the tiles scale properly with flexbox
-    const tile = document.createElement('div')
-    elements.grid.appendChild(tile)
-    tileArray.push(tile)
-    tile.style.width = `${100 / width}%`
-    tile.style.height = `${100 / width}%`
+    const tile = document.createElement("div");
+    elements.grid.appendChild(tile);
+    tileArray.push(tile);
+    tile.style.width = `${100 / width}%`;
+    tile.style.height = `${100 / width}%`;
   }
   // Check for saves on localStorage, if there is no local storage do nothing, if there is then load the saves!
   if (localStorage) {
-    highestValue = localStorage.getItem('highestValue') || 0
-    elements.highestValue.innerHTML = highestValue
-    highScore = localStorage.getItem('highScore') || 0
-    elements.highScore.innerHTML = highScore
+    highestValue = localStorage.getItem("highestValue") || 0;
+    elements.highestValue.innerHTML = highestValue;
+    highScore = localStorage.getItem("highScore") || 0;
+    elements.highScore.innerHTML = highScore;
   }
-  startGame()
+  startGame();
 }
- ```
+```
 
-![Gameplay!](./Screenshots/gameplay.png)
+<img src='./Screenshots/gameplay.png'>
 
 ### Scaling for different displays
 
 I wanted the game to scale and play well on all displays. I achieved this by using a @media query to check whether the display is in portrait or landscape and scaling using view height or view width where appropriate.
 
 ```css
-@media all and (orientation:portrait){
-  #grid{
+@media all and (orientation: portrait) {
+  #grid {
     width: 80vw;
     height: 80vw;
     border: 0.5vw solid rgb(180, 180, 180);
   }
-  header{
+  header {
     width: 80vw;
     padding: 2vw;
     border: 1vw solid rgb(180, 180, 180);
@@ -96,21 +98,23 @@ I wanted the game to scale and play well on all displays. I achieved this by usi
     border: 0.5vw solid rgb(180, 180, 180);
   }
   #end-screen {
-  font-size: 3vw;
-  height: 100vw;
-  padding-top: 25vw;
+    font-size: 3vw;
+    height: 100vw;
+    padding-top: 25vw;
   }
   #end-screen button {
     width: 20vw;
     font-size: 2vw;
   }
-  #HV, #HS, #S {
+  #HV,
+  #HS,
+  #S {
     font-size: 2vw;
   }
 }
 ```
 
-![Mobile View](./Screenshots/mobileView.png)
+<img src='./Screenshots/mobileView.png'>
 
 ### Mobile Friendly
 
@@ -119,86 +123,94 @@ Something I really wanted to achieve with this game was to have it equally playa
 ```js
 //* Mobile Inputs:
 
-let touchX = 0
-let touchY = 0
-let newTouchX = 0
-let newTouchY = 0
+let touchX = 0;
+let touchY = 0;
+let newTouchX = 0;
+let newTouchY = 0;
 
-document.addEventListener('touchstart', (event) => {
+document.addEventListener("touchstart", (event) => {
   // Save the start position of the touch
-  touchX = event.touches[0].pageX
-  touchY = event.touches[0].pageY
-})
+  touchX = event.touches[0].pageX;
+  touchY = event.touches[0].pageY;
+});
 
-document.addEventListener('touchmove', (event) => {
+document.addEventListener("touchmove", (event) => {
   // Save the new position everytime its moved to get the last end pos
-  newTouchX = event.touches[0].pageX
-  newTouchY = event.touches[0].pageY
-})
+  newTouchX = event.touches[0].pageX;
+  newTouchY = event.touches[0].pageY;
+});
 
-document.addEventListener('touchend', () => {
+document.addEventListener("touchend", () => {
   //Find out which axis direction had the biggest change, compare direction and run a movement
   if (Math.abs(touchY - newTouchY) > Math.abs(touchX - newTouchX)) {
     if (touchY >= newTouchY) {
-      shift('up')
+      shift("up");
     } else {
-      shift('down')
+      shift("down");
     }
   } else {
     if (touchX >= newTouchX) {
-      shift('left')
+      shift("left");
     } else {
-      shift('right')
+      shift("right");
     }
   }
-  addActiveTile()
-  updateColors()
-})
+  addActiveTile();
+  updateColors();
+});
 
 //* Deskptop Inputs:
 
-document.addEventListener('keyup', (event) => {
-
+document.addEventListener("keyup", (event) => {
   // make the const key = the key they was pressed
-  const key = event.key
+  const key = event.key;
 
   // Check which input was pressed (takes arrow or wasd)
   switch (true) {
-    case key === 'w' || key === 'ArrowUp': shift('up'); break
-    case key === 'a' || key === 'ArrowLeft': shift('left'); break
-    case key === 's' || key === 'ArrowDown': shift('down'); break
-    case key === 'd' || key === 'ArrowRight': shift('right'); break
+    case key === "w" || key === "ArrowUp":
+      shift("up");
+      break;
+    case key === "a" || key === "ArrowLeft":
+      shift("left");
+      break;
+    case key === "s" || key === "ArrowDown":
+      shift("down");
+      break;
+    case key === "d" || key === "ArrowRight":
+      shift("right");
+      break;
   }
-  addActiveTile()
-  updateColors()
-})
-
+  addActiveTile();
+  updateColors();
+});
 ```
 
 ## Challenges
+
 Fixing bugs around how previously merged tiles should behave was interesting. I used a 'mergeable' class to add/remove from each tile to check whether or not it had merged previously that turn.
 
 ```js
 if (
-  tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML
-  && tileArray[tileIndex].classList.contains('mergeable')
-  && tileArray[directionValue].classList.contains('mergeable')
-  ) { // are they the same number?
-      // Merge the tiles, make the new tile not mergeable again and remove the old tile from the active tile array
-      tileArray[tileIndex].classList.remove('active')
-      tileArray[tileIndex].innerHTML = ''
-      tileArray[directionValue].innerHTML = (Number(tileArray[directionValue].innerHTML) * 2)
-      tileArray[directionValue].classList.add('active')
-      updateScores((Number(tileArray[directionValue].innerHTML)))
-      activeTileIndex.splice(i, 1)
-      tileArray[directionValue].classList.remove('mergeable')
-      addtile = true
-    }
+  tileArray[directionValue].innerHTML === tileArray[tileIndex].innerHTML &&
+  tileArray[tileIndex].classList.contains("mergeable") &&
+  tileArray[directionValue].classList.contains("mergeable")
+) {
+  // are they the same number?
+  // Merge the tiles, make the new tile not mergeable again and remove the old tile from the active tile array
+  tileArray[tileIndex].classList.remove("active");
+  tileArray[tileIndex].innerHTML = "";
+  tileArray[directionValue].innerHTML =
+    Number(tileArray[directionValue].innerHTML) * 2;
+  tileArray[directionValue].classList.add("active");
+  updateScores(Number(tileArray[directionValue].innerHTML));
+  activeTileIndex.splice(i, 1);
+  tileArray[directionValue].classList.remove("mergeable");
+  addtile = true;
+}
 ```
 
+## Victories
 
-
-## Victories 
 Assigning colours based on tile values went very smoothly and colour values are very easy to edit in the code.
 
 ```js
@@ -206,30 +218,66 @@ function updateColors() {
   // finds the tile value each round and updates the colours of each tile accordingly
   tileArray.forEach((tile) => {
     switch (tile.innerHTML) {
-      case '': tile.style.backgroundColor = 'white'; tile.style.color = 'black'; break
-      case '2': tile.style.backgroundColor = '#ffff80'; tile.style.color = 'black'; break
-      case '4': tile.style.backgroundColor = '#ffbf80'; tile.style.color = 'black'; break
-      case '8': tile.style.backgroundColor = '#ff8080'; tile.style.color = 'black'; break
-      case '16': tile.style.backgroundColor = '#ff809f'; tile.style.color = 'black'; break
-      case '32': tile.style.backgroundColor = '	#d966ff'; tile.style.color = 'black'; break
-      case '64': tile.style.backgroundColor = '	#ff00ff'; tile.style.color = 'black'; break
-      case '128': tile.style.backgroundColor = '#00ccff'; tile.style.color = 'black'; break
-      case '256': tile.style.backgroundColor = '#b300b3'; tile.style.color = 'white'; break
-      case '512': tile.style.backgroundColor = '#660066'; tile.style.color = 'white'; break
-      case '1024': tile.style.backgroundColor = '#006600'; tile.style.color = 'white'; break
-      case '2048': tile.style.backgroundColor = '#000000'; tile.style.color = 'white'; break
+      case "":
+        tile.style.backgroundColor = "white";
+        tile.style.color = "black";
+        break;
+      case "2":
+        tile.style.backgroundColor = "#ffff80";
+        tile.style.color = "black";
+        break;
+      case "4":
+        tile.style.backgroundColor = "#ffbf80";
+        tile.style.color = "black";
+        break;
+      case "8":
+        tile.style.backgroundColor = "#ff8080";
+        tile.style.color = "black";
+        break;
+      case "16":
+        tile.style.backgroundColor = "#ff809f";
+        tile.style.color = "black";
+        break;
+      case "32":
+        tile.style.backgroundColor = "	#d966ff";
+        tile.style.color = "black";
+        break;
+      case "64":
+        tile.style.backgroundColor = "	#ff00ff";
+        tile.style.color = "black";
+        break;
+      case "128":
+        tile.style.backgroundColor = "#00ccff";
+        tile.style.color = "black";
+        break;
+      case "256":
+        tile.style.backgroundColor = "#b300b3";
+        tile.style.color = "white";
+        break;
+      case "512":
+        tile.style.backgroundColor = "#660066";
+        tile.style.color = "white";
+        break;
+      case "1024":
+        tile.style.backgroundColor = "#006600";
+        tile.style.color = "white";
+        break;
+      case "2048":
+        tile.style.backgroundColor = "#000000";
+        tile.style.color = "white";
+        break;
     }
-  })
+  });
 }
 ```
 
-
 ## Potential future features
+
 - Server side saving and scoreboards.
 - Sliding animations.
 
-
 ## Lessons learned
+
 - I got good practice with code refactoring while wrting the tile movement functions.
 - Dynamically resizing the game so it looks consistent and nice on all display sizes was good. I didn't know about the orientation media query before this project.
 
