@@ -1,6 +1,6 @@
 ### ![GA](https://cloud.githubusercontent.com/assets/40461/8183776/469f976e-1432-11e5-8199-6ac91363302b.png)
 
-# General Assembly, Software Engineering Immersive
+# General Assembly - Software Engineering Immersive
 
 # 2048 Project
 
@@ -14,21 +14,19 @@ It was also important for me for the game to scale nicely all the way down to mo
 
 This project was completed in 1 week and was an individual project.
 
-[Github](https://github.com/sirdantheawesome/2048)
-
 [You can play it here!](https://sirdantheawesome.github.io/2048/) or click the link at the bottom of this readme.
 
 ## The Brief
 
-- **Render a game in the browser**
-- **Design logic for the game ending and displaying the scores**
-- **Include separate HTML / CSS / JavaScript files**
-- Stick with **KISS (Keep It Simple Stupid)** and **DRY (Don't Repeat Yourself)** principles
-- Use **Javascript** for **DOM manipulation**
-- **Deploy your game online**, where the rest of the world can access it
-- Use **semantic markup** for HTML and CSS (adhere to best practices)
+- **Render a game in the browser.**
+- **Design logic for the game ending and displaying the scores.**
+- **Include separate HTML / CSS / JavaScript files.**
+- Stick with **KISS (Keep It Simple Stupid)** and **DRY (Don't Repeat Yourself)** principles.
+- Use **Javascript** for **DOM manipulation.**
+- **Deploy your game online**, where the rest of the world can access it.
+- Use **semantic markup** for HTML and CSS (adhere to best practices).
 
-## The Technologies used
+## Technologies used
 
 - HTML5
 - CSS3
@@ -40,7 +38,7 @@ This project was completed in 1 week and was an individual project.
 
 ### The Grid
 
-This game was made using a 4 by 4 grid as this is the best way to play 2048. The code was built to account for possible other grid sizes but I felt it was best to stick to the classic 4 by 4
+This game was made using a 4 by 4 grid as this is the best way to play 2048. The code was built to account for possible other grid sizes but I felt it was best to stick to the classic 4 by 4.
 
 ```js
 const width = 4;
@@ -281,4 +279,4 @@ function updateColors() {
 - I got good practice with code refactoring while wrting the tile movement functions.
 - Dynamically resizing the game so it looks consistent and nice on all display sizes was good. I didn't know about the orientation media query before this project.
 
-### [Play the game Now!](https://sirdantheawesome.github.io/project-1/)
+### [Play the game Now!](https://sirdantheawesome.github.io/2048/)
